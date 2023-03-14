@@ -5,74 +5,114 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 
+import org.junit.jupiter.params.ParametrizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.CsvFileSource;
+
 public class AppTest {
     
-    private SuministradorDeDiccionarios miSuministradorDeDiccionarios;
+    private this.miSuministradorDeDiccionarios mithis.miSuministradorDeDiccionarios;
     
     @BeforeAll
-    public void obtenerSuministradorDeDiccionarios(){
-        this.miSuministradorDeDiccionarios = SuministradorDeDiccionariosFactory.getInstance();
+    //@AfterAll
+    //@BeforeEach
+    //@AfterEach
+    public void obtenerthis.miSuministradorDeDiccionarios(){
+        this.mithis.miSuministradorDeDiccionarios = this.miSuministradorDeDiccionariosFactory.getInstance();
     }
 
+    // Comprobar que si pido un diccionario en un idioma existente, el diccionario es devuelto
+    // Servicio? JAVA 9 -> ServiceLoader.loadService(this.miSuministradorDeDiccionarios.class)
     @Test    
-// Comprobar que si pido un diccionario en un idioma existente, el diccionario es devuelto
-// Servicio? JAVA 9 -> ServiceLoader.loadService(SuministradorDeDiccionarios.class)
-    String idioma = "ES";
-    Optional<Diccionario> dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma);
-    // Assert? dicEspanol no venga vacio (venga relleno)
+    public void obtenerDiccionarioValido(){
+        String idioma = "ES";
+        Optional<Diccionario> dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma);
+        Assertions.assertTrue(dicEspanol.isPresent()); // Assert? dicEspanol no venga vacio (venga relleno)
+        Assertions.assertEquals(idioma , dicEspanol.orElseThrow().getIdioma());
+    }
 
-// Comprobar que si pido un diccionario en un idioma que no existente, no se devuelve un diccionario
-//    - Lanzando una Exception    RUINA !!!!!!        ESTO ES UNA MUY MUY MUY MUY MALA PRACTICA
-//        Las excepciones son para tratar casos que no puedo evitar. Eventos que no se si van a ocurrir o no.
-//    - nulo                      RUINA !!!!!!        ESTO ES UNA MUY MUY MUY MUY MALA PRACTICA
-//                                                    El Sonarqube os lo tira a la basura !
-//    - Optional                  GENIAL!!!!!! 
+    // Comprobar que si pido un diccionario en un idioma que no existente, no se devuelve un diccionario
+    @Test    
+    public void obtenerDiccionarioNoValido(){
+        String idioma = "DE LOS ELFOS";
+        Optional<Diccionario> dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma);
+        Assertions.assertTrue(dicEspanol.isEmpty()); 
+    }
+
+    // Comprobar que si pregunto si existe un diccionario en un idioma existente, me digan que SI
+    @Test    
+    public void existeDiccionarioValido(){
+        String idioma = "ES";
+        boolean existe = this.miSuministradorDeDiccionarios.tienesDiccionarioDe(idioma);
+        Assertions.assertTrue(existe); // Assert -> TRUE
+    }
     
-    String idioma = "DE LOS ELFOS";
-    Optional<Diccionario> dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma);
-    // Assert? dicEspanol venga vacio ( no venga relleno)
 
-// Comprobar que si pregunto si existe un diccionario en un idioma existente, me digan que SI
-
-    String idioma = "ES";
-    boolean existe = SuministradorDeDiccionarios.tienesDiccionarioDe(idioma);
-    // Assert -> TRUE
-
-// Comprobar que si pregunto si existe un diccionario en un idioma que no existente, me digan que NO
-
-    String idioma = "DE LOS ELFOS";
-    boolean existe = SuministradorDeDiccionarios.tienesDiccionarioDe(idioma);
-    // Assert -> FALSE
-
-// Comprobar que si a un diccionario que existe le pregunto si existe un término que existe, me diga: que SI
-    PRUEBA -> CASOS DE PRUEBA.... multitud de datos manzana, PERRO, perro, Perro, peRRO
+    // Comprobar que si pregunto si existe un diccionario en un idioma que no existente, me digan que NO
+    @Test    
+    public void existeDiccionarioNoValido(){
+        String idioma = "DE LOS ELFOS";
+        boolean existe = this.miSuministradorDeDiccionarios.tienesDiccionarioDe(idioma);
+        Assertions.assertFalse(existe); //  Assert -> FALSE
+    }
     
-    String idioma = "ES";
-    Diccionario dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
-    dicEspanol.existe("MANZANA") // ASSERT: TRUE
+    // Comprobar que si a un diccionario que existe le pregunto si existe un término que existe, me diga: que SI
+    //PRUEBA -> CASOS DE PRUEBA.... multitud de datos manzana, PERRO, perro, Perro, peRRO
+    @ParametrizedTest
+    @ValueSource(strings= {"MANZANA", "MAnzana", "manzana", "perro", "PERRO", "Perro"})
+    public void asegurarTerminosExisten(String termino){
+        String idioma = "ES";
+        Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
+        Assertions.assertTrue(dicEspanol.existe(termino)); // ASSERT: TRUE
+    }
     
-// Comprobar que si a un diccionario que existe le pregunto si existe un término que no existe, me diga: que NO
-    PRUEBA -> CASOS DE PRUEBA.... multitud de datos manana , 33333 , $%&/2manzana
-
-    String idioma = "ES";
-    Diccionario dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
-    dicEspanol.existe("MORDOR") // ASSERT: FALSE
-
-// Comprobar que si a un diccionario que existe le pido las definiciones de un término que existe me son devueltas.
-
-    String idioma = "ES";
-    Diccionario dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
-    String terminoQueExiste = "Manzana";
-    dicEspanol.getDefiniciones(terminoQueExiste) // Assert Que la lista sea devuelta
-
-// Comprobar que si a un diccionario que existe le pido las definiciones de un término que no existe, nome son devueltas.
-
-    String idioma = "ES";
-    Diccionario dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
-    String terminoQueNOExiste = "FELIPON!!!!";
-    dicEspanol.getDefiniciones(terminoQueNOExiste)  // Assert Que la lista no sea devuelta
-
-// Comprobar que si a un diccionario que existe le pido las sugerencias de un término que no existe me son devueltas.
+    // Comprobar que si a un diccionario que existe le pregunto si existe un término que no existe, me diga: que NO
+    // PRUEBA -> CASOS DE PRUEBA.... multitud de datos manana , 33333 , $%&/2manzana
+    @ParametrizedTest
+    @ValueSource(strings= {"manana", "33333", "$%&/2manzana"})
+    public void asegurarTerminosNoExisten(String termino){
+        String idioma = "ES";
+        Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
+        Assertions.assertFalse(dicEspanol.existe(termino)); // ASSERT: FALSE
+    }
+    // Comprobar que si a un diccionario que existe le pido las definiciones de un término que existe me son devueltas.
+    @ParametrizedTest
+    @CsvSource({"MANZANA,1,Fruto del manzano", "perro,2,Animal de compañía"})
+    public void definicionesTerminosExisten(String terminoQueExiste, int numeroDefiniciones, String primeraDefinicion){
+        String idioma = "ES";
+        Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
+        Assertions.assertTrue(dicEspanol.getDefiniciones(terminoQueExiste).isPresent()); // Assert Que la lista sea devuelta
+        
+        List<String> definiciones = dicEspanol.getDefiniciones(terminoQueExiste).orElseThrow();
+        Assertions.assertEquals(numeroDefiniciones, definiciones.size());
+        Assertions.assertEquals(primeraDefinicion, definiciones.get(0));
+        //??? 
+    }
+    
+    // Comprobar que si a un diccionario que existe le pido las definiciones de un término que existe me son devueltas.
+    @ParametrizedTest
+    @CsvFileSource(resources="/terminos_con_definiciones.csv", numLinesToSkip=1 )
+    public void definicionesTerminosExisten2(String terminoQueExiste, int numeroDefiniciones, String primeraDefinicion){
+        String idioma = "ES";
+        Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
+        Assertions.assertTrue(dicEspanol.getDefiniciones(terminoQueExiste).isPresent()); // Assert Que la lista sea devuelta
+        
+        List<String> definiciones = dicEspanol.getDefiniciones(terminoQueExiste).orElseThrow();
+        Assertions.assertEquals(numeroDefiniciones, definiciones.size());
+        Assertions.assertEquals(primeraDefinicion, definiciones.get(0));
+        //??? 
+    }
+    
+    // Comprobar que si a un diccionario que existe le pido las definiciones de un término que no existe, nome son devueltas.
+    @ParametrizedTest
+    @ValueSource(strings= {"manana", "33333", "$%&/2manzana"})
+    public void definicionesTerminosNoExisten(String terminoQueNOExiste){
+        String idioma = "ES";
+        Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).orElseThrow();
+        Assertions.assertTrue(dicEspanol.getDefiniciones(terminoQueNOExiste).isEmpty());  // Assert Que la lista no sea devuelta
+    }
+    // Comprobar que si a un diccionario que existe le pido las sugerencias de un término que no existe me son devueltas.
 
     
 }
