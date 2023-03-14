@@ -23,4 +23,8 @@ public class Contador {
         this.numero++;
     }
     
+    public void decrementarNumero(){
+        this.numero--;
+    }
+    
 }
