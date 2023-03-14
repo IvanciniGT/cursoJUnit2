@@ -1,13 +1,24 @@
 package com.curso;
 
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+
 public class AppTest {
     
+    private SuministradorDeDiccionarios miSuministradorDeDiccionarios;
     
-// Comprobar que si pido un diccionario en un idioma existente, el diccionario es devuelto
+    @BeforeAll
+    public void obtenerSuministradorDeDiccionarios(){
+        this.miSuministradorDeDiccionarios = SuministradorDeDiccionariosFactory.getInstance();
+    }
 
+    @Test    
+// Comprobar que si pido un diccionario en un idioma existente, el diccionario es devuelto
+// Servicio? JAVA 9 -> ServiceLoader.loadService(SuministradorDeDiccionarios.class)
     String idioma = "ES";
-    Optional<Diccionario> dicEspanol = SuministradorDeDiccionarios.getDiccionario(idioma);
+    Optional<Diccionario> dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma);
     // Assert? dicEspanol no venga vacio (venga relleno)
 
 // Comprobar que si pido un diccionario en un idioma que no existente, no se devuelve un diccionario
