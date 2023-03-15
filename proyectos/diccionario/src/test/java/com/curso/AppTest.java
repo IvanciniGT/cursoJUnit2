@@ -62,7 +62,7 @@ public class AppTest {
     // Comprobar que si a un diccionario que existe le pregunto si existe un término que existe, me diga: que SI
     //PRUEBA -> CASOS DE PRUEBA.... multitud de datos manzana, PERRO, perro, Perro, peRRO
     @ParameterizedTest
-    @ValueSource(strings= {"MANZANA", "MAnzana", "manzana", "perro", "PERRO", "Perro"})
+    @ValueSource(strings= {"MANZANA", "MAnzana", "manzana", "perro", "PERRO", "Perro","Cantimplora"})
     public void asegurarTerminosExisten(String termino){
         String idioma = "ES";
         Diccionario dicEspanol = this.miSuministradorDeDiccionarios.getDiccionario(idioma).get();
