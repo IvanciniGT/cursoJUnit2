@@ -36,3 +36,12 @@ Programa de pruebas montado con JUNIT
                                                         Telefono
                                                     Y ahora si he realizado pruebas GUAYS !
                                                     Cuanta pasta me voy a dejar en testers? 
+                                                    
+                                                    
+.java     -> .class 
+.kotlin ( -> .class   --> JVM )
+.scala  ( -> .class   --> JVM )
+
+
+C#
+
