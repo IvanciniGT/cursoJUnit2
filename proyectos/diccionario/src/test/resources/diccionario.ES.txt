@@ -1,0 +1,2 @@
+manzana=Fruto del manzano
+perro=Animal de compañía|Persona muy perezosa
