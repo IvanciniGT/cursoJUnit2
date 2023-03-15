@@ -9,22 +9,25 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.List;
+import java.net.URL;
 import java.util.Optional;
 
 import com.curso.impl.Utilidades;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginTest {
 
   private WebDriver driver;
 
   @BeforeAll
   public void setUp() throws Exception {
-    System.setProperty("webdriver.chrome.driver", "");
-    driver = new ChromeDriver();
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName("chrome");
+    driver = new RemoteWebDriver( new URL("http://34.243.13.64:4444/wd/hub"), capabilities );
   }
 
   @Test
@@ -34,7 +37,7 @@ public class LoginTest {
     driver.findElement(By.id("txt-username")).sendKeys("John Doe");
     driver.findElement(By.id("txt-password")).clear();
     driver.findElement(By.id("txt-password")).sendKeys("ThisIsNotAPassword");
-    driver.findElement(By.id("btn-make-appointment")).click();
+    driver.findElement(By.id("btn-login")).click();
     Assertions.assertEquals("Make Appointment", driver.findElement(By.xpath("//section[@id='appointment']//h2")).getText());
   }
 
