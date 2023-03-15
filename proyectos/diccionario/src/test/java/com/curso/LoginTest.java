@@ -16,6 +16,7 @@ import java.util.List;
 import java.net.URL;
 import java.util.Optional;
 import java.nio.file.*;
+import java.io.*;
 
 import com.curso.impl.Utilidades;
 
@@ -42,13 +43,13 @@ public class LoginTest {
     driver.findElement(By.id("txt-password")).sendKeys(password);
     driver.findElement(By.id("btn-login")).click();
     Assertions.assertEquals("Make Appointment", driver.findElement(By.xpath("//section[@id='appointment']//h2")).getText());
-    capturarPantalla(driver, "login_ok")
+    capturarPantalla(driver, "login_ok");
   }
 
-  public static capturarPantalla(WebDriver driver, String nombre){
+  public static void capturarPantalla(WebDriver driver, String nombre) throws Exception{
       TakesScreenshot capturador=(TakesScreenshot)driver;
       File imagen = capturador.getScreenshotAs(OutputType.FILE);
-      Files.copy(imagen.toPath(), Paths.get("./"+nombre+".png"), StandardCopyAction.REPLACE_EXISTING);
+      Files.copy(imagen.toPath(), Paths.get("./"+nombre+".png"), StandardCopyOption.REPLACE_EXISTING);
   }
 
   @AfterAll
